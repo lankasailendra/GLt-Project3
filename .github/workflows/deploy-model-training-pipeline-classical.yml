@@ -1,0 +1,57 @@
+name: deploy-model-training-pipeline
+
+on: 
+  workflow_dispatch:
+jobs:
+  get-config:
+    uses: Azure/mlops-templates/.github/workflows/read-yaml.yml@main
+    with:
+      file_name: config-infra-prod.yml
+
+  create-compute:
+    needs: get-config
+    uses: Azure/mlops-templates/.github/workflows/create-compute.yml@main
+    with:
+      # Specify the cluster configuration
+      cluster_name: __________  # This is the name of your compute cluster
+      size: ____________        # This is the VM size for your compute cluster
+      min_instances: __          # This is the minimum number of instances for your compute cluster
+      max_instances: __          # This is the maximum number of instances for your compute cluster
+      cluster_tier: ___________  # This is the tier for your compute cluster (e.g., dedicated)
+      resource_group: ${{ needs.get-config.outputs.resource_group }}
+      workspace_name: ${{ needs.get-config.outputs.aml_workspace }}     
+    secrets:
+      creds: ${{secrets.AZURE_CREDENTIALS}}
+        
+  register-dataset:
+    needs: get-config
+    uses: Azure/mlops-templates/.github/workflows/register-dataset.yml@main
+    with:
+      resource_group: ${{ needs.get-config.outputs.resource_group }}
+      workspace_name: ${{ needs.get-config.outputs.aml_workspace }}
+      name: used-cars-data
+      data_file: mlops/azureml/train/data.yml
+    secrets:
+      creds: ${{secrets.AZURE_CREDENTIALS}}
+  
+  register-environment:
+    needs: get-config
+    uses: Azure/mlops-templates/.github/workflows/register-environment.yml@main
+    with:
+      resource_group: ${{ needs.get-config.outputs.resource_group }}
+      workspace_name: ${{ needs.get-config.outputs.aml_workspace }}
+      environment_file:  mlops/azureml/train/train-env.yml
+      conda_file: data-science/environment/train-conda.yml
+    secrets:
+      creds: ${{secrets.AZURE_CREDENTIALS}}
+      
+  run-pipeline:
+    needs: [get-config, register-environment, create-compute, register-dataset]
+    uses: Azure/mlops-templates/.github/workflows/run-pipeline.yml@main
+    with:
+      resource_group: ${{ needs.get-config.outputs.resource_group }}
+      workspace_name: ${{ needs.get-config.outputs.aml_workspace }}
+      parameters-file:  mlops/azureml/train/newpipeline.yml
+      job-name: mlops-pipeline
+    secrets:
+      creds: ${{secrets.AZURE_CREDENTIALS}}
