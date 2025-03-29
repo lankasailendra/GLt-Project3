@@ -10,6 +10,9 @@ inputs:
   criterion:
     type: string
     default: gini
+  n_estimators:
+    type: integer
+    default: 100
   max_depth:
     type: integer
     default: 5
@@ -23,5 +26,6 @@ command: >-
   --test_data ${{inputs.test_data}}
   --criterion ${{inputs.criterion}}
   --max_depth ${{inputs.max_depth}}
+  --n_estimators ${{inputs.n_estimators}}
   --model_output ${{outputs.model_output}}
 environment: azureml:used-cars-train-env@latest
