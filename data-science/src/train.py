@@ -19,6 +19,7 @@ def parse_args():
     parser.add_argument("--train_data", type=str, help="Path to train dataset")
     parser.add_argument("--test_data", type=str, help="Path to test dataset")
     parser.add_argument("--model_output", type=str, help="Path of output model")
+    parser.add_argument('--n_estimators', type=int, default=100,
     parser.add_argument('--criterion', type=str, default='gini',
                         help='The function to measure the quality of a split')
     parser.add_argument('--max_depth', type=int, default=None,
@@ -41,25 +42,27 @@ def main(args):
     y_test = test_df['class']
     X_test = test_df.drop(columns=['class'])
 
-    # Initialize and train a Decision Tree Classifier
-    model = DecisionTreeClassifier(criterion=args.criterion, max_depth=args.max_depth)
+    # Initialize and train a Randomforest Classifier
+    model = RandomForestRegressor(n_estimators=args.n_estimators, max_depth=args.max_depth)
     model.fit(X_train, y_train)
 
     # Log model hyperparameters
-    mlflow.log_param("model", "DecisionTreeClassifier")
-    mlflow.log_param("criterion", args.criterion)
+    mlflow.log_param("model", "RandomForestClassifier")
+    mlflow.log_param("n_estimators", args.n_estimators)
     mlflow.log_param("max_depth", args.max_depth)
 
     # Predict using the Decision Tree Model on test data
     yhat_test = model.predict(X_test)
 
-    # Compute and log recall score for test data
-    recall = recall_score(y_test, yhat_test)
-    print('Recall of Decision Tree classifier on test set: {:.2f}'.format(recall))
-    mlflow.log_metric("Recall", float(recall))
+    # Compute and log mean squared error for test data
+    mse = mean_squared_error(y_test, yhat_test)
+    print('Mean Squared Error of RandomForest Regressor on test set: {:.2f}'.format(mse))
+    mlflow.log_metric("MSE", float(mse))  # Log the MSE
+
 
     # Save the model
     mlflow.sklearn.save_model(sk_model=model, path=args.model_output)
+
 
 if __name__ == "__main__":
     
@@ -82,4 +85,3 @@ if __name__ == "__main__":
     main(args)
 
     mlflow.end_run()
-
