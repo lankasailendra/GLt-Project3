@@ -59,8 +59,8 @@ jobs:
       goal: maximize
       primary_metric: Recall
     limits:
-      max_total_trials: 20
-      max_concurrent_trials: 10
+      max_total_trials: 8
+      max_concurrent_trials: 5
       timeout: 7200
 
 
