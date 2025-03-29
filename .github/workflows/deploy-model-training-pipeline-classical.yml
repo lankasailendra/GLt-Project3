@@ -1,7 +1,12 @@
 name: deploy-model-training-pipeline
 
 on: 
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 jobs:
   get-config:
     uses: Azure/mlops-templates/.github/workflows/read-yaml.yml@main
@@ -13,11 +18,11 @@ jobs:
     uses: Azure/mlops-templates/.github/workflows/create-compute.yml@main
     with:
       # Specify the cluster configuration
-      cluster_name: __________  # This is the name of your compute cluster
-      size: ____________        # This is the VM size for your compute cluster
-      min_instances: __          # This is the minimum number of instances for your compute cluster
-      max_instances: __          # This is the maximum number of instances for your compute cluster
-      cluster_tier: ___________  # This is the tier for your compute cluster (e.g., dedicated)
+      cluster_name: cpu_cluster
+      size: Standard_DS11_v2
+      min_instances: 0
+      max_instances: 1
+      cluster_tier: dedicated
       resource_group: ${{ needs.get-config.outputs.resource_group }}
       workspace_name: ${{ needs.get-config.outputs.aml_workspace }}     
     secrets:
