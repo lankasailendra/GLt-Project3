@@ -47,7 +47,7 @@ jobs:
       model_output:
         type: mlflow_model
     sampling_algorithm: random
-    trial: ./train.yml  # Refers to a separate command component
+    trial: ./train.yml
     search_space:
       n_estimators:
         type: choice
