@@ -10,9 +10,12 @@ inputs:
     path: azureml:used-cars-data@latest
 
 outputs:
-  train_data:uri_folder
-  test_data:uri_folder
-  model_info_output_path:uri_folder
+  train_data:
+    type: uri_folder
+  test_data:
+    type: uri_folder
+  model_info_output_path:
+    type: uri_folder
 
 settings:
   default_datastore: azureml:workspaceblobstore
