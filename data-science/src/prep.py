@@ -30,6 +30,11 @@ def main(args):  # Write the function name for the main data preparation logic
     # Reading Data
     df = pd.read_csv(args.raw_data)
 
+    # Encode categorical feature
+    le = LabelEncoder()
+    df['Segment'] = le.fit_transform(df['Segment'])  # Write code to encode the categorical feature
+
+
     # Split Data into train and test datasets
     train_df, test_df = train_test_split(df, test_size=args.test_train_ratio, random_state=42)
     
