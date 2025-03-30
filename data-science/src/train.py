@@ -47,7 +47,7 @@ def main(args):
     model.fit(X_train, y_train)
 
     # Log model hyperparameters
-    mlflow.log_param("model", "RandomForestClassifier")
+    mlflow.log_param("model", "RandomForestRegressor")
     mlflow.log_param("n_estimators", args.n_estimators)
     mlflow.log_param("max_depth", args.max_depth)
 
