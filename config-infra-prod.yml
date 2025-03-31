@@ -13,7 +13,7 @@ variables:
   enable_aml_secure_workspace: true
   enable_monitoring: false
 
-  # Azure DevOps
+  # Azure DevOps.
   ado_service_connection_rg: Azure-ARM-Prod
   ado_service_connection_aml_ws: Azure-ARM-Prod
 
