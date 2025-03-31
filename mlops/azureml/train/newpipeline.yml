@@ -58,6 +58,9 @@ jobs:
       max_depth:
         type: choice
         values: [10,20,30,40]
+      n_estimators:
+        type: choice
+        values: [10,20,30,50]
     objective:
       goal: minimize
       primary_metric: MSE
